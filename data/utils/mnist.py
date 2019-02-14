@@ -66,19 +66,19 @@ for subset in dataset:
     y_list = subset[1]
 
     # Import to data frame
-    trainData = {'x': x_list, 'y': y_list}
-    trainData = pd.DataFrame(data=trainData)
+    dataFrame = {'x': x_list, 'y': y_list}
+    dataFrame = pd.DataFrame(data=dataFrame)
 
     # Sort the data
-    trainData = trainData.sort_values(by=['y'])
-    trainData = trainData.reset_index()
+    dataFrame = dataFrame.sort_values(by=['y'])
+    dataFrame = dataFrame.reset_index()
 
     # Balance the class distribution
     x_list = []
     y_list = []
     for digit in range(number_of_class):
-        x = trainData[trainData['y']==digit].x.tolist()[:subset[2]]
-        y = trainData[trainData['y']==digit].y.tolist()[:subset[2]]
+        x = dataFrame[dataFrame['y']==digit].x.tolist()[:subset[2]]
+        y = dataFrame[dataFrame['y']==digit].y.tolist()[:subset[2]]
         x_list = x_list + x
         y_list = y_list + y
 
@@ -93,8 +93,8 @@ for subset in dataset:
     indices = indices * digit_per_user
 
     # Import to data frame
-    trainData = {'x': x_list, 'y': y_list, 'id': indices}
-    trainData = pd.DataFrame(data=trainData)
+    dataFrame = {'x': x_list, 'y': y_list, 'id': indices}
+    dataFrame = pd.DataFrame(data=dataFrame)
 
     # Initialize user data
     users = [str(i) for i in range(number_of_users)]
@@ -104,8 +104,8 @@ for subset in dataset:
 
     # Distribute the data
     for user in users:
-        user_data[user]['x'] = trainData[trainData['id']==int(user)].x.tolist()
-        user_data[user]['y'] = trainData[trainData['id']==int(user)].y.tolist()
+        user_data[user]['x'] = dataFrame[dataFrame['id']==int(user)].x.tolist()
+        user_data[user]['y'] = dataFrame[dataFrame['id']==int(user)].y.tolist()
 
     # Prepare the content
     all_data = {}
