@@ -28,6 +28,7 @@ MODEL_PARAMS = {
     'sent140.bag_log_reg': (0.0003, 2), # lr, num_classes
     'femnist.cnn': (0.0003, 62), # lr, num_classes
     'mnist.cnn': (0.0003, 10), # lr, num_classes
+    'mnist.2nn': (0.0003, 10), # lr, num_classes
     'shakespeare.stacked_lstm': (0.0003, 80, 53, 256) # lr, seq_len, num_classes, num_hidden
 }
 
