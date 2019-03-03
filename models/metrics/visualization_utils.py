@@ -186,10 +186,12 @@ def plot_bytes_written_and_read(sys_metrics, rolling_window=10, figsize=(10, 8),
     plt.plot(rounds, server_metrics['bytes_read'], alpha=0.7)
 
     plt.title('Bytes Written and Read by Server vs. Round Number', fontsize=title_fontsize)
-    plt.xlabel('Round Number')
-    plt.ylabel('Bytes')
-    plt.legend(['Bytes Written', 'Bytes Read'], loc='upper left')
+    plt.xlabel('Round Number', fontsize=16)
+    plt.ylabel('Bytes', fontsize=16)
+    plt.legend(['Bytes Written', 'Bytes Read'], loc='upper left', fontsize=11)
     _set_plot_properties(kwargs)
+    plt.xticks(fontsize=16)
+    plt.yticks(fontsize=16)
     plt.show()
 
 
