@@ -26,3 +26,45 @@ def iid_divide(l, g):
     for i in range(num_big_groups):
         glist.append(l[bi + group_size * i:bi + group_size * (i + 1)])
     return glist
+
+def filter_list(data, patterns, exclude=False):
+    '''
+    data is list of original columns
+    patterns is list of patterns, which indicate columns that will be excluded
+    (if exclude flag is true) or included (if exclude flag is false)
+    '''
+    if type(patterns) != list:
+        patterns = [patterns]
+
+    for pattern in patterns:
+        if exclude:
+            data = [item for item in data if pattern not in item]
+        else:
+            data = [item for item in data if pattern in item]
+
+    return(data)
+
+def filter_time(data, start_date=None, end_date=None, time_column='Timestamp'):
+    '''
+    data is list of original columns
+    patterns is list of patterns, which indicate columns that will be
+    excluded (if exclude flag is true) or included (if exclude flag
+    is false)
+    '''
+
+    column_index = data.columns.values.tolist().index(time_column)
+
+    if start_date is None:
+        start_date = min(data.iloc[:,column_index])
+    if end_date is None:
+        end_date = max(data.iloc[:,column_index])
+
+    index = (
+        data.iloc[:,column_index] >= start_date
+    ) & (
+        data.iloc[:,column_index] <= end_date
+    )
+    filtered_data = data.loc[index]
+    filtered_data = filtered_data.reset_index(drop=True)
+
+    return(filtered_data)

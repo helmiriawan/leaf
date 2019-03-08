@@ -6,10 +6,11 @@ import os
 import sys
 import tensorflow as tf
 
-from baseline_constants import ACCURACY_KEY
+from baseline_constants import ACCURACY_KEY, REGRESSION_METRIC_KEY
 
 from utils.model_utils import batch_data
 from utils.tf_utils import graph_size
+from math import sqrt
 
 
 class Model(ABC):
@@ -106,7 +107,10 @@ class Model(ABC):
                 feed_dict={self.features: x_vecs, self.labels: labels}
             )
         acc = float(tot_acc) / x_vecs.shape[0]
-        return {ACCURACY_KEY: acc}
+        if tot_acc.dtype == 'float32':
+            return {REGRESSION_METRIC_KEY: sqrt(acc)}
+        else:
+            return {ACCURACY_KEY: acc}
 
     def close(self):
         self.sess.close()
