@@ -293,3 +293,58 @@ def get_longest_flops_path(sys_metrics):
     comp_matrix = np.asarray(comp_matrix)
     num_flops = np.sum(np.max(comp_matrix, axis=0))
     return '%.2E' % Decimal(num_flops.item())
+
+def get_logs(directory, starts_with):
+    """Gets the list of log files from evaluation processes"""
+
+    all_files = []
+    for file in os.listdir(directory):
+        all_files.append(directory + '/' + file)
+
+    selected_files = []
+    for log_file in all_files:
+        if log_file.startswith(starts_with):
+            selected_files.append(log_file)
+
+    return(selected_files)
+
+def get_accuracy(stat_metrics_file):
+    """
+    Gets the weighted mean accuracy of each communication rounds
+    from all clients
+    """
+
+    stat_metrics = pd.read_csv(stat_metrics_file) if stat_metrics_file else None
+    if stat_metrics is not None:
+        stat_metrics.sort_values(by=NUM_ROUND_KEY, inplace=True)
+
+    accuracies = stat_metrics.groupby(NUM_ROUND_KEY)
+    accuracies = accuracies.apply(_weighted_mean, ACCURACY_KEY, NUM_SAMPLES_KEY)
+
+    return(accuracies)
+
+def get_bytes(sys_metrics_file, rolling_window=1000):
+    """
+    Gets the total bytes sent on each communication rounds
+    from all clients (in gigabytes)
+    """
+
+    # Load the data
+    sys_metrics = pd.read_csv(sys_metrics_file)
+
+    # Preprocess the data
+    server_metrics = sys_metrics.groupby(NUM_ROUND_KEY, as_index=False).sum()
+    server_metrics['bytes_written'] = server_metrics['bytes_written'] / 1073741824
+    server_metrics['bytes_read'] = server_metrics['bytes_read'] / 1073741824
+    server_metrics = server_metrics.rolling(rolling_window, on=NUM_ROUND_KEY, min_periods=1).sum()
+
+    return(server_metrics)
+
+def change_evaluation_interval(metric, interval):
+    """Change the evaluation interval of the log"""
+
+    new_metric = []
+    for index in range(0, len(metric), interval):
+        new_metric.append(metric[index])
+
+    return(new_metric)

@@ -12,6 +12,8 @@ import argparse
 import json
 import os
 
+from util import get_indices, drop_pixels, drop_pixels_federated
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--name',
@@ -24,15 +26,28 @@ parser.add_argument('--iid',
 parser.add_argument('--niid',
                 help="sample niid;",
                 dest='iid', action='store_false')
+parser.add_argument('--nu',
+                help="number of users; default: 90",
+                type=int,
+                default=90)
+parser.add_argument('--ns',
+                help="number of training samples; default: 5400",
+                type=int,
+                default=5400)
+parser.add_argument('--nt',
+                help="number of test samples; default: 810",
+                type=int,
+                default=810)
+parser.add_argument('--np',
+                help="split the images into several partitions",
+                type=int,
+                default=0)
 parser.set_defaults(iid=False)
 
 args = parser.parse_args()
 
 # Configuration
 number_of_class = 10
-train_sample_per_digit = 5400
-test_sample_per_digit = 810
-number_of_users = 90
 if(args.iid):
     digit_per_user = 10
 else:
@@ -49,12 +64,12 @@ mnist = tf.keras.datasets.mnist
 (x_train, y_train),(x_test, y_test) = mnist.load_data()
 x_train, x_test = x_train / 255.0, x_test / 255.0
 
-dataset =   [
-                    [ x_train, y_train, train_sample_per_digit, "train" ], 
-			        [ x_test, y_test, test_sample_per_digit, "test" ]
-				]
+dataset = [
+    [ x_train, y_train, args.ns, "train" ],
+    [ x_test, y_test, args.nt, "test" ]
+]
 
-for subset in dataset:
+for count, subset in enumerate(dataset):
 
     # Flatten the features
     x_list = []
@@ -66,46 +81,50 @@ for subset in dataset:
     y_list = subset[1]
 
     # Import to data frame
-    dataFrame = {'x': x_list, 'y': y_list}
-    dataFrame = pd.DataFrame(data=dataFrame)
+    data_frame = {'x': x_list, 'y': y_list}
+    data_frame = pd.DataFrame(data=data_frame)
 
     # Sort the data
-    dataFrame = dataFrame.sort_values(by=['y'])
-    dataFrame = dataFrame.reset_index()
+    data_frame = data_frame.sort_values(by=['y'])
+    data_frame = data_frame.reset_index()
 
     # Balance the class distribution
     x_list = []
     y_list = []
     for digit in range(number_of_class):
-        x = dataFrame[dataFrame['y']==digit].x.tolist()[:subset[2]]
-        y = dataFrame[dataFrame['y']==digit].y.tolist()[:subset[2]]
+        x = data_frame[data_frame['y']==digit].x.tolist()[:subset[2]]
+        y = data_frame[data_frame['y']==digit].y.tolist()[:subset[2]]
         x_list = x_list + x
         y_list = y_list + y
 
     # Assign user ID to each samples
     total_samples = len(x_list)
-    replication = int(total_samples/number_of_users/digit_per_user)
+    replication = int(total_samples/args.nu/digit_per_user)
     counter = 0
     indices = []
-    for user in range(number_of_users):
+    for user in range(args.nu):
         user_id = [user] * replication
         indices = indices + user_id
     indices = indices * digit_per_user
 
     # Import to data frame
-    dataFrame = {'x': x_list, 'y': y_list, 'id': indices}
-    dataFrame = pd.DataFrame(data=dataFrame)
+    data_frame = {'x': x_list, 'y': y_list, 'id': indices}
+    data_frame = pd.DataFrame(data=data_frame)
 
     # Initialize user data
-    users = [str(i) for i in range(number_of_users)]
+    users = [str(i) for i in range(args.nu)]
     user_data = {}
     for user in users:
         user_data[user] = {'x': [], 'y': []}
 
     # Distribute the data
     for user in users:
-        user_data[user]['x'] = dataFrame[dataFrame['id']==int(user)].x.tolist()
-        user_data[user]['y'] = dataFrame[dataFrame['id']==int(user)].y.tolist()
+        user_data[user]['x'] = data_frame[data_frame['id']==int(user)].x.tolist()
+        user_data[user]['y'] = data_frame[data_frame['id']==int(user)].y.tolist()
+
+    # Remove some pixels
+    if args.np != 0 and count == 0:
+        user_data = drop_pixels_federated(user_data, partitions=4)
 
     # Prepare the content
     all_data = {}
@@ -118,7 +137,7 @@ for subset in dataset:
     if(args.iid):
         slabel = 'iid'
     else:
-       slabel = 'niid'
+        slabel = 'niid'
 
     file_name = 'mnist_data_%s_%s.json' % (slabel, subset[3])
     output_file = os.path.join(data_dir, subset[3], file_name)

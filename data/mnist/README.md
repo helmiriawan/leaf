@@ -5,10 +5,14 @@
 - pip3 install pillow
 - Run ```./preprocess.sh``` with a choice of the following tags:
     - ```-s``` := 'iid' to sample in an i.i.d. manner, or 'niid' to sample in a non-i.i.d. manner; more information on i.i.d. versus non-i.i.d. is included in the 'Notes' section
+    - ```--nu``` := number of users; default is 90
+    - ```--ns``` := number of training samples per class; default is 5400
+    - ```--nt``` := number of test samples per class; default is 810
+    - ```--np``` := number of image partitions; if it is more than 1 then the images will be divided into several partitions and only one of them is used to train the model; default is 0
 
 i.e.
-- ```./preprocess.sh -s iid``` (i.i.d. dataset)<br/>
-- ```./preprocess.sh -s niid``` (non-i.i.d. dataset)
+- ```./preprocess.sh -s iid --np 4 --nu 4 --ns 4800 --nt 720``` (i.i.d. dataset)<br/>
+- ```./preprocess.sh -s niid --np 4 --nu 4 --ns 4800 --nt 720``` (non-i.i.d. dataset)
 
 Make sure to delete the test and train subfolders in the data directory before re-running preprocess.sh
 
