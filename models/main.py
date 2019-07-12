@@ -52,6 +52,10 @@ def main():
     client_model = ClientModel(*model_params)
     server_model = ServerModel(ClientModel(*model_params))
 
+    if args.initial_model is not None:
+        path = 'checkpoints/' + args.dataset + '/' + args.initial_model + '.ckpt'
+        server_model.restore(path)
+
     # Create server
     server = Server(server_model)
 
@@ -127,6 +131,10 @@ def parse_args():
                     help='batch size when clients train on data;',
                     type=int,
                     default=10)
+    parser.add_argument('--initial_model',
+                    help='initial model that will be retrained;',
+                    type=str,
+                    default=None)
 
     # Minibatch doesn't support num_epochs, so make them mutually exclusive
     epoch_capability_group = parser.add_mutually_exclusive_group()

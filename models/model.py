@@ -123,6 +123,8 @@ class Model(ABC):
 class ServerModel:
     def __init__(self, model):
         self.model = model
+        self.graph = tf.Graph()
+        self.sess = tf.Session(graph=self.graph)
 
     @property
     def size(self):
@@ -176,6 +178,9 @@ class ServerModel:
 
     def save(self, path='checkpoints/model.ckpt'):
         return self.model.saver.save(self.model.sess, path)
+
+    def restore(self, path='checkpoints/model.ckpt'):
+        return self.model.saver.restore(self.model.sess, path)
 
     def close(self):
         self.model.close()
