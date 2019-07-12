@@ -124,7 +124,7 @@ for count, subset in enumerate(dataset):
 
     # Remove some pixels
     if args.np != 0 and count == 0:
-        user_data = drop_pixels_federated(user_data, partitions=4)
+        user_data = drop_pixels_federated(user_data, partitions=args.np)
 
     # Prepare the content
     all_data = {}
