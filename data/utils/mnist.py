@@ -98,13 +98,13 @@ for count, subset in enumerate(dataset):
         y_list = y_list + y
 
     # Split the data into multiple partitions
-    if args.np != 0:
+    if args.np != 0 and count == 0:
         x_list = x_list * args.np
         y_list = y_list * args.np
 
     # Assign user ID to each samples
     total_samples = len(x_list)
-    if args.np != 0:
+    if args.np != 0 and count == 0:
         replication = int(total_samples/args.np)
     else:
         replication = int(total_samples/args.nu/digit_per_user)
@@ -113,7 +113,9 @@ for count, subset in enumerate(dataset):
     for user in range(args.nu):
         user_id = [user] * replication
         indices = indices + user_id
-    if args.np == 0:
+    if args.np != 0 and count == 0:
+        pass
+    else:
         indices = indices * digit_per_user
 
     # Import to data frame
