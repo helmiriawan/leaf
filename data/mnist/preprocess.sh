@@ -69,6 +69,24 @@ case $key in
         shift # past value
     fi
     ;;
+    --dx)
+    XSIZE="$2"
+    shift # past argument
+    if [ ${XSIZE:0:1} = "-" ]; then
+        XSIZE=""
+    else
+        shift # past value
+    fi
+    ;;
+    --dy)
+    YSIZE="$2"
+    shift # past argument
+    if [ ${YSIZE:0:1} = "-" ]; then
+        YSIZE=""
+    else
+        shift # past value
+    fi
+    ;;
     *)    # unknown option
     shift # past argument
     ;;
@@ -95,12 +113,18 @@ NUMBER_PARTITIONS=""
 if [ ! -z $PARTITIONS ]; then
     NUMBER_PARTITIONS="--np $PARTITIONS"
 fi
+if [ ! -z $XSIZE ]; then
+    X_SIZE="--dx $XSIZE"
+fi
+if [ ! -z $YSIZE ]; then
+    Y_SIZE="--dy $YSIZE"
+fi
 
 if [ ! $SAMPLE = "na" ]; then
     if [ $SAMPLE = "iid" ]; then
-        python3 mnist.py --name $NAME --iid $NUMBER_USER $NUMBER_TRAIN $NUMBER_TEST $NUMBER_PARTITIONS
+        python3 mnist.py --name $NAME --iid $NUMBER_USER $NUMBER_TRAIN $NUMBER_TEST $NUMBER_PARTITIONS $X_SIZE $Y_SIZE
     else
-        python3 mnist.py --name $NAME $NUMBER_USER $NUMBER_TRAIN $NUMBER_TEST $NUMBER_PARTITIONS
+        python3 mnist.py --name $NAME $NUMBER_USER $NUMBER_TRAIN $NUMBER_TEST $NUMBER_PARTITIONS $X_SIZE $Y_SIZE
     fi
 fi
 

@@ -1,5 +1,6 @@
 import numpy as np
 import pickle
+import cv2
 
 from math import sqrt
 
@@ -125,3 +126,13 @@ def drop_pixels_federated(users, partitions):
             users[str(user)]['x'] = vectors
 
     return(users)
+
+def rescale(image, size):
+    """Scale the image and revert back to its original scale"""
+
+    original_size = np.shape(image)
+
+    scaled = cv2.resize(image, size, interpolation=cv2.INTER_AREA)
+    rescaled = cv2.resize(scaled, original_size, interpolation=cv2.INTER_AREA)
+
+    return(rescaled)

@@ -12,7 +12,7 @@ import argparse
 import json
 import os
 
-from util import get_indices, drop_pixels, drop_pixels_federated
+from util import get_indices, drop_pixels, drop_pixels_federated, rescale
 
 parser = argparse.ArgumentParser()
 
@@ -42,6 +42,14 @@ parser.add_argument('--np',
                 help="split the images into several partitions",
                 type=int,
                 default=0)
+parser.add_argument('--dx',
+                help="horizontal size of rescaled images",
+                type=int,
+                default=28)
+parser.add_argument('--dy',
+                help="vertical size of rescaled images",
+                type=int,
+                default=28)
 parser.set_defaults(iid=False)
 
 args = parser.parse_args()
@@ -70,6 +78,15 @@ dataset = [
 ]
 
 for count, subset in enumerate(dataset):
+
+    # Rescale the training data
+    if args.dx != 28 or args.dy != 28:
+        if count == 0:
+            new_set = []
+            for record in subset[0]:
+                record = rescale(record, (args.dx, args.dy))
+                new_set.append(record)
+            subset[0] = np.array(new_set)
 
     # Flatten the features
     x_list = []
