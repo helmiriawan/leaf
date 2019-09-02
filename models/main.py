@@ -17,13 +17,20 @@ from model import ServerModel
 from utils.constants import DATASETS
 from utils.model_utils import read_data
 
-STAT_METRICS_PATH = 'metrics/stat_metrics.csv'
-SYS_METRICS_PATH = 'metrics/sys_metrics.csv'
+STAT_METRICS_FILENAME = 'metrics/stat_metrics'
+SYS_METRICS_FILENAME = 'metrics/sys_metrics'
 
 
 def main():
 
     args = parse_args()
+
+    if args.initial_model is not None:
+        name = '-B-' + str(args.batch_size) + '-E-' + str(args.num_epochs) + '-LR-' + str(args.lr) + '-I-' + args.initial_model
+    else:
+        name = '-B-' + str(args.batch_size) + '-E-' + str(args.num_epochs) + '-LR-' + str(args.lr)
+    STAT_METRICS_PATH = STAT_METRICS_FILENAME + name + '.csv'
+    SYS_METRICS_PATH = SYS_METRICS_FILENAME + name + '.csv'
 
     model_path = '%s/%s.py' % (args.dataset, args.model)
     if not os.path.exists(model_path):
@@ -91,7 +98,7 @@ def main():
             print_metrics(stat_metrics, all_num_samples)
 
     # Save server model
-    save_model(server_model, args.dataset, args.model)
+    save_model(server_model, args.dataset, args.model + name)
 
     # Close models
     server_model.close()
