@@ -75,6 +75,8 @@ def print_dataset_stats(name):
         bins = [0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 440, 460, 480, 500]
     if name == 'mnist':
         bins = [0, 200, 400, 600, 800, 1000]
+    if name == 'fashion-mnist':
+        bins = [0, 200, 400, 600, 800, 1000]
 
     hist, edges = np.histogram(num_samples,bins=bins)
     print("\nnum_sam\tnum_users")

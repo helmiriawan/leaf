@@ -1,5 +1,5 @@
 '''
-samples from MNIST data;
+samples from MNIST or fashion-MNIST data;
 by default samples in a non-iid manner, where each user only has samples
 of two digits of image; otherwise, each user has samples from all digits
 '''
@@ -68,8 +68,11 @@ parent_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 data_dir = os.path.join(parent_path, args.name, 'data')
 
 # Load dataset
-mnist = tf.keras.datasets.mnist
-(x_train, y_train),(x_test, y_test) = mnist.load_data()
+if args.name == 'fashion-mnist':
+    fullset = tf.keras.datasets.fashion_mnist
+else:
+    fullset = tf.keras.datasets.mnist
+(x_train, y_train),(x_test, y_test) = fullset.load_data()
 x_train, x_test = x_train / 255.0, x_test / 255.0
 
 dataset = [
@@ -167,7 +170,7 @@ for count, subset in enumerate(dataset):
     else:
         slabel = 'niid'
 
-    file_name = 'mnist_data_%s_%s.json' % (slabel, subset[3])
+    file_name = args.name + '_data_%s_%s.json' % (slabel, subset[3])
     output_file = os.path.join(data_dir, subset[3], file_name)
 
     print('writing %s' % file_name)

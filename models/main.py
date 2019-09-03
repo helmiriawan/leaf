@@ -26,7 +26,7 @@ def main():
     args = parse_args()
 
     if args.initial_model is not None:
-        name = '-B-' + str(args.batch_size) + '-E-' + str(args.num_epochs) + '-LR-' + str(args.lr) + '-I-' + args.initial_model
+        name = '-B-' + str(args.batch_size) + '-E-' + str(args.num_epochs) + '-LR-' + str(args.lr) #+ '-I-' + args.initial_model
     else:
         name = '-B-' + str(args.batch_size) + '-E-' + str(args.num_epochs) + '-LR-' + str(args.lr)
     STAT_METRICS_PATH = STAT_METRICS_FILENAME + name + '.csv'
