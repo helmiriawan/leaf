@@ -122,9 +122,9 @@ fi
 
 if [ ! $SAMPLE = "na" ]; then
     if [ $SAMPLE = "iid" ]; then
-        python3 mnist.py --name $NAME --iid $NUMBER_USER $NUMBER_TRAIN $NUMBER_TEST $NUMBER_PARTITIONS $X_SIZE $Y_SIZE
+        python3 sample_keras.py --name $NAME --iid $NUMBER_USER $NUMBER_TRAIN $NUMBER_TEST $NUMBER_PARTITIONS $X_SIZE $Y_SIZE
     else
-        python3 mnist.py --name $NAME $NUMBER_USER $NUMBER_TRAIN $NUMBER_TEST $NUMBER_PARTITIONS $X_SIZE $Y_SIZE
+        python3 sample_keras.py --name $NAME $NUMBER_USER $NUMBER_TRAIN $NUMBER_TEST $NUMBER_PARTITIONS $X_SIZE $Y_SIZE
     fi
 fi
 

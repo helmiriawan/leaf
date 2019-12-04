@@ -93,7 +93,7 @@ case $key in
 esac
 done
 
-NAME="mnist" # name of the dataset, equivalent to directory name
+NAME="cifar10" # name of the dataset, equivalent to directory name
 
 cd ../utils
 

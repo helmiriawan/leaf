@@ -1,1 +1,1 @@
-DATASETS = ['sent140', 'femnist', 'shakespeare', 'mnist', 'fashion-mnist']
+DATASETS = ['sent140', 'femnist', 'shakespeare', 'mnist', 'fashion-mnist', 'cifar10']

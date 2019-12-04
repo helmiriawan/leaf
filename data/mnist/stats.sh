@@ -4,6 +4,6 @@ NAME="mnist"
 
 cd ../utils
 
-python3 stats_mnist.py --name $NAME
+python3 stats_keras.py --name $NAME
 
 cd ../$NAME

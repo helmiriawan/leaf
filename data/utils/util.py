@@ -64,7 +64,10 @@ def drop_pixels(dataset, partitions=4, keep_index=[1, 1]):
     )
 
     for sample in dataset:
-        new_sample = np.zeros((image_size, image_size))
+        if image_size == 28:
+            new_sample = np.zeros((image_size, image_size))
+        else:
+            new_sample = np.zeros((image_size, image_size, 3))
         partition = []
 
         for row in sample[row_indices[0]:row_indices[1]]:
@@ -106,7 +109,11 @@ def drop_pixels_federated(users, partitions):
             # Convert vectors to matrices
             matrices = []
             for vector in users[str(user)]['x']:
-                matrix = np.array(vector).reshape([28, 28])
+                length = len(vector)
+                if length == 784:
+                    matrix = np.array(vector).reshape([28, 28])
+                else:
+                    matrix = np.array(vector).reshape([32, 32, 3])
                 matrices.append(matrix)
 
             # Drop some pixels

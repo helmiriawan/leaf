@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-NAME="fashion-mnist"
+NAME="cifar10"
 
 cd ../utils
 
