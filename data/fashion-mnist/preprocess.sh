@@ -87,6 +87,15 @@ case $key in
         shift # past value
     fi
     ;;
+    --copy)
+    COPY="$2"
+    shift # past argument
+    if [ ${COPY:0:1} = "-" ]; then
+        COPY=""
+    else
+        shift # past value
+    fi
+    ;;
     *)    # unknown option
     shift # past argument
     ;;
@@ -119,12 +128,15 @@ fi
 if [ ! -z $YSIZE ]; then
     Y_SIZE="--dy $YSIZE"
 fi
+if [ ! -z $COPY ]; then
+    COPY_IMAGES="--copy $COPY"
+fi
 
 if [ ! $SAMPLE = "na" ]; then
     if [ $SAMPLE = "iid" ]; then
-        python3 sample_keras.py --name $NAME --iid $NUMBER_USER $NUMBER_TRAIN $NUMBER_TEST $NUMBER_PARTITIONS $X_SIZE $Y_SIZE
+        python3 sample_keras.py --name $NAME --iid $NUMBER_USER $NUMBER_TRAIN $NUMBER_TEST $NUMBER_PARTITIONS $X_SIZE $Y_SIZE $COPY_IMAGES
     else
-        python3 sample_keras.py --name $NAME $NUMBER_USER $NUMBER_TRAIN $NUMBER_TEST $NUMBER_PARTITIONS $X_SIZE $Y_SIZE
+        python3 sample_keras.py --name $NAME $NUMBER_USER $NUMBER_TRAIN $NUMBER_TEST $NUMBER_PARTITIONS $X_SIZE $Y_SIZE $COPY_IMAGES
     fi
 fi
 

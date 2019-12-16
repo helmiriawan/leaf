@@ -50,6 +50,9 @@ parser.add_argument('--dy',
                 help="vertical size of rescaled images",
                 type=int,
                 default=28)
+parser.add_argument("--copy",
+                    help="copy images to all clients; default: false",
+                    type=str)
 parser.set_defaults(iid=False)
 
 args = parser.parse_args()
@@ -125,13 +128,13 @@ for count, subset in enumerate(dataset):
     x_list = new_x_list
 
     # Split the data into multiple partitions
-    if args.np != 0 and count == 0:
+    if args.copy == 'True' and count == 0:
         x_list = x_list * args.np
         y_list = y_list * args.np
 
     # Assign user ID to each samples
     total_samples = len(x_list)
-    if args.np != 0 and count == 0:
+    if args.copy == 'True' and count == 0:
         replication = int(total_samples/args.np)
     else:
         replication = int(total_samples/args.nu/digit_per_user)
@@ -140,7 +143,7 @@ for count, subset in enumerate(dataset):
     for user in range(args.nu):
         user_id = [user] * replication
         indices = indices + user_id
-    if args.np != 0 and count == 0:
+    if args.copy == 'True' and count == 0:
         pass
     else:
         indices = indices * digit_per_user
